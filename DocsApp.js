@@ -30,14 +30,14 @@ class DocsApp extends Component {
     if (!_.find(this.state.docs, '_id', newDoc._id)) {
       this.setState({
         docs: this.state.docs.concat(newDoc)
-      })
+      });
     }
   }
 
   removeDoc(oldDoc) {
     this.setState({
       docs: this.state.docs.filter(doc => doc !== oldDoc)
-    })
+    });
   }
 
   componentDidMount() {
@@ -45,8 +45,8 @@ class DocsApp extends Component {
       .then(results => {
         this.setState({
           docs: results.rows.map(row => row.doc)
-        })
-      })
+        });
+      });
 
     const sync = localDB.sync(remoteDB, {
       live: true,
@@ -64,34 +64,19 @@ class DocsApp extends Component {
     localDB.changes({
       live: true,
       include_docs: true
-    })
-    .on('change', this.handleChange.bind(this))
-    .on('complete', console.log.bind(console, '[Change:Complete]'))
-    .on('error', console.log.bind(console, '[Change:Error]'))
+    }).on('change', this.handleChange.bind(this))
+      .on('complete', console.log.bind(console, '[Change:Complete]'))
+      .on('error', console.log.bind(console, '[Change:Error]'))
   }
 
   onDocSubmit(doc) {
-    var newDoc = {
-      _id: doc,
-      content: doc
-    };
-
-    localDB.put(newDoc)
-      .then(response => {
-        newDoc._rev = response.rev;
-        this.addDoc(newDoc);
-      }).catch(err => {
-        console.log('Error inserting', err);
-      })
+    localDB.put({_id: doc, content: doc})
+      .catch(console.log.bind(console, 'Error inserting'));
   }
 
   onDocRemove(oldDoc) {
     localDB.remove(oldDoc)
-      .then(response => {
-        this.removeDoc(oldDoc);
-      }).catch(err => {
-        console.log('Error removing', err);
-      })
+      .catch(console.log.bind(console, 'Error removing'));
   }
 
   handleChange(change) {
