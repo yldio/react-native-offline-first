@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 
 import PouchDB from 'pouchdb';
+import _ from 'lodash';
 
 import DocForm from './DocForm';
 import Docs from './Docs';
@@ -26,9 +27,11 @@ class DocsApp extends Component {
   }
 
   addDoc(newDoc) {
-    this.setState({
-      docs: this.state.docs.concat(newDoc)
-    })
+    if (!_.find(this.state.docs, '_id', newDoc._id)) {
+      this.setState({
+        docs: this.state.docs.concat(newDoc)
+      })
+    }
   }
 
   removeDoc(oldDoc) {
@@ -103,9 +106,7 @@ class DocsApp extends Component {
     if (doc._deleted) {
       this.removeDoc(doc);
     } else {
-      if (~!this.state.docs.indexOf(doc)) {
-        this.addDoc(doc);
-      }
+      this.addDoc(doc);
     }
   }
 

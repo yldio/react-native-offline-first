@@ -10,5 +10,8 @@
     "pouchdb-asyncstorage-down": "^1.1.9",
     "react": "15.0.2",
     "react-native": "^0.26.2"
+  },
+  "devDependencies": {
+    "lodash.find": "^4.4.0"
   }
 }
