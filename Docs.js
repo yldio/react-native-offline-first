@@ -27,7 +27,7 @@ class DocsComponent extends Component {
           <Text style={styles.removeBtn}>Remove</Text>
         </TouchableHighlight>
         <View style={styles.rightContainer}>
-          <Text style={styles.doc}>{doc}</Text>
+          <Text style={styles.doc}>{doc.content}</Text>
         </View>
       </View>
     );

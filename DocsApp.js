@@ -1,36 +1,118 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  View
+  View,
+  Text
 } from 'react-native';
+
+import PouchDB from 'pouchdb';
 
 import DocForm from './DocForm';
 import Docs from './Docs';
+
+const localDB = new PouchDB('docs');
+const remoteDB = new PouchDB('http://localhost:5984/docs');
+
+const syncStates = ['change', 'paused', 'active', 'denied', 'complete', 'error'];
 
 class DocsApp extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      docs: ['Item1', 'Item2']
-    }
+      docs: [],
+      syncStatus: ''
+    };
   }
 
-  onDocSubmit(doc) {
+  addDoc(newDoc) {
     this.setState({
-      docs: this.state.docs.concat(doc)
+      docs: this.state.docs.concat(newDoc)
     })
   }
 
-  onDocRemove(oldDoc) {
+  removeDoc(oldDoc) {
     this.setState({
       docs: this.state.docs.filter(doc => doc !== oldDoc)
     })
   }
 
+  componentDidMount() {
+    localDB.allDocs({include_docs: true})
+      .then(results => {
+        this.setState({
+          docs: results.rows.map(row => row.doc)
+        })
+      })
+
+    const sync = localDB.sync(remoteDB, {
+      live: true,
+      retry: true
+    });
+
+    syncStates.forEach(state => {
+      this.setState({
+        syncStatus: state
+      });
+
+      sync.on(state, console.log.bind(console, '[Sync:' + state + ']'));
+    });
+
+    localDB.changes({
+      live: true,
+      include_docs: true
+    })
+    .on('change', this.handleChange.bind(this))
+    .on('complete', console.log.bind(console, '[Change:Complete]'))
+    .on('error', console.log.bind(console, '[Change:Error]'))
+  }
+
+  onDocSubmit(doc) {
+    var newDoc = {
+      _id: doc,
+      content: doc
+    };
+
+    localDB.put(newDoc)
+      .then(response => {
+        newDoc._rev = response.rev;
+        this.addDoc(newDoc);
+      }).catch(err => {
+        console.log('Error inserting', err);
+      })
+  }
+
+  onDocRemove(oldDoc) {
+    localDB.remove(oldDoc)
+      .then(response => {
+        this.removeDoc(oldDoc);
+      }).catch(err => {
+        console.log('Error removing', err);
+      })
+  }
+
+  handleChange(change) {
+    console.log('[Change:Change]', change);
+
+    var doc = change.doc;
+
+    if (!doc) {
+      return;
+    }
+
+    if (doc._deleted) {
+      this.removeDoc(doc);
+    } else {
+      if (~!this.state.docs.indexOf(doc)) {
+        this.addDoc(doc);
+      }
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <Text>{this.state.syncStatus}</Text>
         <DocForm
           onDocSubmit={this.onDocSubmit.bind(this)}
         />
