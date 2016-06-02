@@ -36,7 +36,7 @@ class DocsApp extends Component {
 
   removeDoc(oldDoc) {
     this.setState({
-      docs: this.state.docs.filter(doc => doc !== oldDoc)
+      docs: this.state.docs.filter(doc => doc._id !== oldDoc._id)
     });
   }
 
@@ -70,7 +70,7 @@ class DocsApp extends Component {
   }
 
   onDocSubmit(doc) {
-    localDB.put({_id: doc, content: doc})
+    localDB.put({_id: doc, content: doc, imageUrl: 'http://facebook.github.io/react/img/logo_og.png?' + (+new Date())})
       .catch(console.log.bind(console, 'Error inserting'));
   }
 

@@ -4,7 +4,8 @@ import {
   Text,
   View,
   ListView,
-  TouchableHighlight
+  TouchableHighlight,
+  Image
 } from 'react-native';
 
 class DocsComponent extends Component {
@@ -28,6 +29,13 @@ class DocsComponent extends Component {
         </TouchableHighlight>
         <View style={styles.rightContainer}>
           <Text style={styles.doc}>{doc.content}</Text>
+        </View>
+        <View style={styles.rightContainer}>
+          <Image
+            style={styles.logo}
+            source={{uri: doc.imageUrl}}
+            defaultSource={require('./assets/images/image-loading.png')}
+          />
         </View>
       </View>
     );
@@ -63,9 +71,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: 'center',
   },
+  logo: {
+    height: 100,
+    width: 100
+  },
   removeBtn: {
     width: 53,
     height: 81,
+    backgroundColor: 'grey'
   },
   listView: {
     paddingTop: 20,
