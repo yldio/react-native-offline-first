@@ -46,7 +46,7 @@ class DocsApp extends Component {
         this.setState({
           docs: results.rows.map(row => row.doc)
         });
-      });
+      }).catch(err => console.log.bind(console, '[Fetch all]'));
 
     const sync = localDB.sync(remoteDB, {
       live: true,
@@ -54,11 +54,15 @@ class DocsApp extends Component {
     });
 
     syncStates.forEach(state => {
-      this.setState({
-        syncStatus: state
-      });
+      sync.on(state, setCurrentState.bind(this, state));
 
-      sync.on(state, console.log.bind(console, '[Sync:' + state + ']'));
+      function setCurrentState(state) {
+        console.log('[Sync:' + state + ']');
+
+        this.setState({
+          syncStatus: state
+        });
+      }
     });
 
     localDB.changes({
