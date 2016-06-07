@@ -6,15 +6,16 @@ import {
 } from 'react-native';
 
 import PouchDB from 'pouchdb';
+import PouchSync from 'pouch-websocket-sync';
 import _ from 'lodash';
 
 import DocForm from './DocForm';
 import Docs from './Docs';
 
 const localDB = new PouchDB('docs');
-const remoteDB = new PouchDB('http://localhost:5984/docs');
 
-const syncStates = ['change', 'paused', 'active', 'denied', 'complete', 'error'];
+const syncEvents = ['change', 'paused', 'active', 'denied', 'complete', 'error'];
+const clientEvents = ['connect', 'disconnect', 'reconnect'];
 
 class DocsApp extends Component {
   constructor(props) {
@@ -48,29 +49,37 @@ class DocsApp extends Component {
         });
       }).catch(err => console.log.bind(console, '[Fetch all]'));
 
-    const sync = localDB.sync(remoteDB, {
-      live: true,
-      retry: true
-    });
+    const syncClient = PouchSync.createClient();
 
-    syncStates.forEach(state => {
-      sync.on(state, setCurrentState.bind(this, state));
-
-      function setCurrentState(state) {
-        console.log('[Sync:' + state + ']');
-
-        this.setState({
-          syncStatus: state
-        });
-      }
-    });
+    const sync = syncClient
+      .connect('ws://localhost:3001')
+      .on('error', console.log.bind(console, '[Sync:Error] - ' + err))
+      .sync(localDB, {
+        remoteName: 'docs',
+      });
 
     localDB.changes({
       live: true,
       include_docs: true
     }).on('change', this.handleChange.bind(this))
       .on('complete', console.log.bind(console, '[Change:Complete]'))
-      .on('error', console.log.bind(console, '[Change:Error]'))
+      .on('error', console.log.bind(console, '[Change:Error]'));
+
+    syncEvents.forEach(event => {
+      sync.on(event, setCurrentState.bind(this, event));
+    });
+
+    clientEvents.forEach(event => {
+      syncClient.on(event, setCurrentState.bind(this, event));
+    });
+
+    function setCurrentState(state) {
+      console.log('[Sync:' + state + ']');
+
+      this.setState({
+        syncStatus: state
+      });
+    }
   }
 
   onDocSubmit(doc) {

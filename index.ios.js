@@ -4,6 +4,7 @@
  * @flow
  */
 
+global.Buffer = global.Buffer || require('buffer');
 process.nextTick = setImmediate
 
 import React, { Component } from 'react';
