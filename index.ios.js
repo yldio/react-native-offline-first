@@ -4,8 +4,7 @@
  * @flow
  */
 
-global.Buffer = global.Buffer || require('buffer');
-process.nextTick = setImmediate
+import './polyfill';
 
 import React, { Component } from 'react';
 import { AppRegistry } from 'react-native';
