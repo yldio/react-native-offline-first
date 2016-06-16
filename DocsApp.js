@@ -20,6 +20,9 @@ class DocsApp extends Component {
   constructor(props) {
     super(props);
 
+    this.defaultImgId = Date.now();
+    this.imgId = this.defaultImgId;
+
     this.state = {
       docs: [],
       syncStatus: ''
@@ -74,8 +77,16 @@ class DocsApp extends Component {
   }
 
   onDocSubmit(doc) {
-    localDB.put({_id: doc, content: doc, imageUrl: 'http://facebook.github.io/react/img/logo_og.png?' + (+new Date())})
+    var imageUrl = 'http://unsplash.it/200?random&t=' + this.imgId;
+
+    localDB.put({_id: doc, content: doc, imageUrl: imageUrl})
       .catch(console.log.bind(console, 'Error inserting'));
+
+    this.imgId++;
+
+    if (this.imgId == this.defaultImgId + 3) {
+      this.imgId = this.defaultImgId;
+    }
   }
 
   onDocRemove(oldDoc) {
