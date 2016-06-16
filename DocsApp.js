@@ -5,7 +5,7 @@ import {
   Text
 } from 'react-native';
 
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb-react-native';
 import _ from 'lodash';
 
 import DocForm from './DocForm';
