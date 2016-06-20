@@ -25,30 +25,61 @@ class DocForm extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          style={styles.text}
-          onChangeText={(doc) => this.setState({doc})}
-          value={this.state.doc}
-        />
-        <Text onPress={this._onDocSubmit.bind(this)}>Add</Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.text}
+            onChangeText={(doc) => this.setState({doc})}
+            value={this.state.doc}
+          />
+        </View>
+        <Text
+          onPress={this._onDocSubmit.bind(this)}
+          style={styles.btn}
+          >Add item
+        </Text>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+
+  //Main container - add text box
   container: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
-  text: {
+
+  //inputContainer
+  inputContainer: {
+    flex: 0.5,
+    borderWidth: 1,
+    borderColor: '#D4D4D4',
     backgroundColor: 'white',
-    width: 200,
-    marginTop: 145,
-    marginBottom: 145
+    height: 35,
+    marginBottom: 10,
+    marginRight: 10,
+    borderRadius: 2,
+  },
+
+  //Text input
+  text: {
+    height: 30,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingTop: 5,
+  },
+
+  //Button
+  btn: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 8,
+    height: 34,
+    textAlign: 'center',
+    color: 'white',
+    backgroundColor: '#3068C6',
+    borderRadius: 2,
   }
 });
 

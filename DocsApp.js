@@ -21,6 +21,9 @@ class DocsApp extends Component {
   constructor(props) {
     super(props);
 
+    this.defaultImgId = Date.now();
+    this.imgId = this.defaultImgId;
+
     this.state = {
       docs: [],
       syncStatus: ''
@@ -83,8 +86,16 @@ class DocsApp extends Component {
   }
 
   onDocSubmit(doc) {
-    localDB.put({_id: doc, content: doc, imageUrl: 'http://facebook.github.io/react/img/logo_og.png?' + (+new Date())})
+    var imageUrl = 'http://unsplash.it/200?random&t=' + this.imgId;
+
+    localDB.put({_id: doc, content: doc, imageUrl: imageUrl})
       .catch(console.log.bind(console, 'Error inserting'));
+
+    this.imgId++;
+
+    if (this.imgId == this.defaultImgId + 3) {
+      this.imgId = this.defaultImgId;
+    }
   }
 
   onDocRemove(oldDoc) {
@@ -111,28 +122,69 @@ class DocsApp extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>{this.state.syncStatus}</Text>
-        <DocForm
-          onDocSubmit={this.onDocSubmit.bind(this)}
-        />
+        <View style={styles.containerForm}>
+          <View style={styles.containerStatus}>
+            <Text style={styles.statusText}>{this.state.syncStatus}</Text>
+          </View>
+          <DocForm
+            onDocSubmit={this.onDocSubmit.bind(this)}
+          />
+        </View>
         <View style={styles.separator} />
-        <Docs
-          docs={this.state.docs}
-          onDocRemove={this.onDocRemove.bind(this)}
-        />
+        <View style={styles.containerList}>
+          <Docs
+            docs={this.state.docs}
+            onDocRemove={this.onDocRemove.bind(this)}
+          />
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+
+  //Status bar
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    flexDirection: 'column',
+    backgroundColor: '#EEEEEE',
   },
+
+  //containerForm
+  containerForm: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
+    marginTop: 40,
+    backgroundColor: '#EEEEEE',
+  },
+
+  //containerStatus
+  containerStatus: {
+    backgroundColor: 'red',
+    height: 10,
+    marginBottom: 20,
+    borderRadius: 20,
+  },
+
+  //Status Text
+  statusText: {
+    color: 'white',
+    flexDirection: 'row',
+    textAlign: 'center',
+  },
+
+  //containerList
+  containerList: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+
+  //Separator - Add form/List
   separator: {
-    height: 1,
-    backgroundColor: '#eeeeee',
+    height: 0,
+    backgroundColor: 'aliceblue',
   }
 });
 

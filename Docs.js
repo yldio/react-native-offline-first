@@ -24,13 +24,17 @@ class DocsComponent extends Component {
   renderDoc(doc) {
     return (
       <View style={styles.container}>
-        <TouchableHighlight onPress={this._removeDoc(doc)}>
+        <TouchableHighlight
+          onPress={this._removeDoc(doc)}
+          underlayColor="aliceblue"
+          style={styles.removeBtnContainer}
+        >
           <Text style={styles.removeBtn}>Remove</Text>
         </TouchableHighlight>
         <View style={styles.rightContainer}>
           <Text style={styles.doc}>{doc.content}</Text>
         </View>
-        <View style={styles.rightContainer}>
+        <View style={styles.logoContainer}>
           <Image
             style={styles.logo}
             source={{uri: doc.imageUrl}}
@@ -56,34 +60,61 @@ class DocsComponent extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+
+  //List container
+  listView: {
   },
+
+  //List item
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+    marginTop: 3,
+    backgroundColor: 'white',
+    borderColor: '#E8E8E8',
+    borderWidth: 1,
+    borderBottomColor: '#D4D4D4',
+    borderBottomWidth: 1,
+    borderRadius: 2,
+  },
+
+  //RemoveBtnContainer
+  removeBtnContainer: {
+    padding: 5,
+  },
+
+  //Remove BTN
+  removeBtn: {
+    fontSize: 10,
+  },
+
+  //Text container
   rightContainer: {
     flex: 1,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
+
+  //item text
   doc: {
-    fontSize: 20,
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 18,
+    textAlign: 'left',
   },
+
+  //Logo Container
+  logoContainer: {
+    backgroundColor: 'red',
+    width: 50,
+  },
+
+  //Logo
   logo: {
-    height: 100,
-    width: 100
+    width: 50,
+    height: 50,
+    backgroundColor: 'yellow',
   },
-  removeBtn: {
-    width: 53,
-    height: 81,
-    backgroundColor: 'grey'
-  },
-  listView: {
-    paddingTop: 20,
-    backgroundColor: '#F5FCFF',
-  },
+
 });
 
 export default DocsComponent;
