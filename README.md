@@ -31,6 +31,12 @@ sh ./node_modules/react-native/packager/packager.sh
 react-native run-ios --simulator="iPhone 6"
 ```
 
+**Websocket Server**
+
+```
+npm run websocket-server
+```
+
 ## Contributing
 
 1. Fork it
