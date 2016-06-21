@@ -2,5 +2,5 @@
 
 global.Buffer = global.Buffer || require('buffer').Buffer
 
-if (!process.version) process.version = 'v0.10'
+if (!process.version) process.version = '';
 process.nextTick = process.nextTick || setImmediate
