@@ -56,7 +56,7 @@ class DocsApp extends Component {
 
     const sync = syncClient
       .connect('ws://localhost:3001')
-      .on('error', console.log.bind(console, '[Sync:Error] - ' + err))
+      .on('error', err => console.log.bind(console, '[Sync:Error] - ' + err))
       .sync(localDB, {
         remoteName: 'docs',
       });
