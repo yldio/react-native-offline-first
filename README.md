@@ -1,6 +1,6 @@
 # React-Native-Offline-Fist
 
-###This is a simple project to understand some concepts regarding react-native and offline-first apps
+### 💥This is a simple project to understand some concepts regarding react-native and offline-first apps
 
 
 ### Let's start
